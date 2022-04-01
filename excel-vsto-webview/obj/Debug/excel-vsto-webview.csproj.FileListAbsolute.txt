@@ -10,3 +10,13 @@ C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.csproj.Cor
 C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.csproj.CopyComplete
 C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.dll
 C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.pdb
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\runtimes\win-x86\native\WebView2Loader.dll
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\runtimes\win-x64\native\WebView2Loader.dll
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\runtimes\win-arm64\native\WebView2Loader.dll
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\Microsoft.Web.WebView2.Core.dll
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\Microsoft.Web.WebView2.WinForms.dll
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\Microsoft.Web.WebView2.Wpf.dll
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\Microsoft.Web.WebView2.Core.xml
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\Microsoft.Web.WebView2.WinForms.xml
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\Microsoft.Web.WebView2.Wpf.xml
+C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel_vsto_webview.Form1.resources

@@ -1,0 +1,646 @@
+// Copyright (C) Microsoft Corporation. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// These are the WebView2 experimental APIs published publicly as a part of the
+// WebView2 prerelease package. Modifications to any published interface require
+// a breaking change for the experimental APIs. Otherwise, do not modify
+// published interfaces.
+
+// midl is run from a tools directory with no special include paths setup.
+// To import an IDL from the build you must get out of the tools path
+// first.
+// We include the shipping webview2.idl so that our preview APIs may
+// interact with our public APIs.
+import "../../edge_embedded_browser/client/win/current/webview2.idl";
+
+[uuid(07abc5eb-fae4-4485-bf29-083ac335408b), version(1.0)]
+library WebView2Experimental {
+
+// Forward declarations
+
+interface ICoreWebView2Experimental5;
+interface ICoreWebView2Experimental8;
+interface ICoreWebView2ExperimentalClearBrowsingDataCompletedHandler;
+interface ICoreWebView2ExperimentalCompositionController3;
+interface ICoreWebView2ExperimentalCompositionController4;
+interface ICoreWebView2ExperimentalControllerOptions;
+interface ICoreWebView2ExperimentalController2;
+interface ICoreWebView2ExperimentalEnvironment3;
+interface ICoreWebView2ExperimentalEnvironment8;
+interface ICoreWebView2ExperimentalProfile;
+interface ICoreWebView2ExperimentalProfile2;
+interface ICoreWebView2ExperimentalProfile3;
+interface ICoreWebView2ExperimentalProfile4;
+interface ICoreWebView2ExperimentalUpdateRuntimeCompletedHandler;
+interface ICoreWebView2ExperimentalUpdateRuntimeResult;
+
+// Enums and structs
+
+/// Matrix that represents a 3D transform. This transform is used to
+/// calculate correct coordinates when calling
+/// CreateCoreWebView2PointerInfoFromPointerId. This is equivalent to a
+/// D2D1_MATRIX_4X4_F
+typedef struct COREWEBVIEW2_MATRIX_4X4 {
+  /// The value in the first row and first column of the matrix.
+  FLOAT _11;
+  /// The value in the first row and second column of the matrix.
+  FLOAT _12;
+  /// The value in the first row and third column of the matrix.
+  FLOAT _13;
+  /// The value in the first row and fourth column of the matrix.
+  FLOAT _14;
+  /// The value in the second row and first column of the matrix.
+  FLOAT _21;
+  /// The value in the second row and second column of the matrix.
+  FLOAT _22;
+  /// The value in the second row and third column of the matrix.
+  FLOAT _23;
+  /// The value in the second row and fourth column of the matrix.
+  FLOAT _24;
+  /// The value in the third row and first column of the matrix.
+  FLOAT _31;
+  /// The value in the third row and second column of the matrix.
+  FLOAT _32;
+  /// The value in the third row and third column of the matrix.
+  FLOAT _33;
+  /// The value in the third row and fourth column of the matrix.
+  FLOAT _34;
+  /// The value in the fourth row and first column of the matrix.
+  FLOAT _41;
+  /// The value in the fourth row and second column of the matrix.
+  FLOAT _42;
+  /// The value in the fourth row and third column of the matrix.
+  FLOAT _43;
+  /// The value in the fourth row and fourth column of the matrix.
+  FLOAT _44;
+} COREWEBVIEW2_MATRIX_4X4;
+
+/// Status of UpdateRuntime operation result.
+[v1_enum]
+typedef enum COREWEBVIEW2_UPDATE_RUNTIME_STATUS {
+  /// Latest version of Edge WebView2 Runtime is installed.
+  /// No update for Edge WebView2 Runtime is available, or Edge WebView2
+  /// Runtime is updated successfully and latest version is now installed.
+  COREWEBVIEW2_UPDATE_RUNTIME_STATUS_LATEST_VERSION_INSTALLED,
+
+  /// Edge WebView2 Runtime update is already running, which could be
+  /// triggered by auto update or by other UpdateRuntime request from some app.
+  COREWEBVIEW2_UPDATE_RUNTIME_STATUS_UPDATE_ALREADY_RUNNING,
+
+  /// Edge WebView2 Runtime update is blocked by group policy.
+  COREWEBVIEW2_UPDATE_RUNTIME_STATUS_BLOCKED_BY_POLICY,
+
+  /// Edge WebView2 Runtime update failed.
+  /// See `ExtendedError` property of UpdateRuntimeResult for more
+  /// information about the failure.
+  COREWEBVIEW2_UPDATE_RUNTIME_STATUS_FAILED,
+} COREWEBVIEW2_UPDATE_RUNTIME_STATUS;
+
+/// Specifies memory usage target level of WebView.
+[v1_enum]
+typedef enum COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL {
+  /// Specifies normal memory usage target level.
+  COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_NORMAL,
+
+  /// Specifies low memory usage target level.
+  /// Used for inactivate WebView for reduced memory consumption.
+  COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_LOW,
+
+} COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL;
+
+/// An enum to represent the options for WebView2 color scheme: auto, light, or dark.
+[v1_enum]
+typedef enum COREWEBVIEW2_PREFERRED_COLOR_SCHEME {
+    /// Auto color scheme
+    COREWEBVIEW2_PREFERRED_COLOR_SCHEME_AUTO,
+
+    /// Light color scheme
+    COREWEBVIEW2_PREFERRED_COLOR_SCHEME_LIGHT,
+
+    /// Dark color scheme
+    COREWEBVIEW2_PREFERRED_COLOR_SCHEME_DARK
+} COREWEBVIEW2_PREFERRED_COLOR_SCHEME;
+
+/// Specifies the datatype for the
+/// `ICoreWebView2ExperimentalProfile4::ClearBrowsingData` method.
+[v1_enum]
+typedef enum COREWEBVIEW2_BROWSING_DATA_KINDS {
+
+    /// Specifies file systems data.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_FILE_SYSTEMS = 1 << 0,
+
+    /// Specifies data stored by the IndexedDB DOM feature.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_INDEXED_DB = 1 << 1,
+
+    /// Specifies data stored by the localStorage DOM API.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_LOCAL_STORAGE = 1 << 2,
+
+    /// Specifies data stored by the Web SQL database DOM API.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_WEB_SQL = 1 << 3,
+
+    /// Specifies data stored by the CacheStorage DOM API.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_CACHE_STORAGE = 1 << 4,
+
+    /// Specifies DOM storage data, now and future. This browsing data kind is
+    /// inclusive of COREWEBVIEW2_BROWSING_DATA_KINDS_FILE_SYSTEMS,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_INDEXED_DB,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_LOCAL_STORAGE,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_WEB_SQL,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_CACHE_STORAGE.
+    /// New DOM storage data types may be added to this data kind in the future.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_ALL_DOM_STORAGE = 1 << 5,
+
+    /// Specifies HTTP cookies data.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_COOKIES = 1 << 6,
+
+    /// Specifies all site data, now and future. This browsing data kind
+    /// is inclusive of COREWEBVIEW2_BROWSING_DATA_KINDS_ALL_DOM_STORAGE and
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_COOKIES. New site data types
+    /// may be added to this data kind in the future.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_ALL_SITE = 1 << 7,
+
+    /// Specifies disk cache.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_DISK_CACHE = 1 << 8,
+
+    /// Specifies download history data.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_DOWNLOAD_HISTORY = 1 << 9,
+
+    /// Specifies general autofill form data.
+    /// This excludes password information and includes information like:
+    /// names, street and email addresses, phone numbers, and arbitrary input.
+    /// This also includes payment data.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_GENERAL_AUTOFILL = 1 << 10,
+
+    /// Specifies password autosave data.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_PASSWORD_AUTOSAVE = 1 << 11,
+
+    /// Specifies browsing history data.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_BROWSING_HISTORY = 1 << 12,
+
+    /// Specifies settings data.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_SETTINGS = 1 << 13,
+
+    /// Specifies profile data that should be wiped to make it look like a new profile.
+    /// This does not delete account-scoped data like passwords but will remove access
+    /// to account-scoped data by signing the user out.
+    /// Specifies all profile data, now and future. New profile data types may be added
+    /// to this data kind in the future.
+    /// This browsing data kind is inclusive of COREWEBVIEW2_BROWSING_DATA_KINDS_ALL_SITE,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_DISK_CACHE,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_DOWNLOAD_HISTORY,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_GENERAL_AUTOFILL,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_PASSWORD_AUTOSAVE,
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_BROWSING_HISTORY, and
+    /// COREWEBVIEW2_BROWSING_DATA_KINDS_SETTINGS.
+    COREWEBVIEW2_BROWSING_DATA_KINDS_ALL_PROFILE =  1 << 14,
+} COREWEBVIEW2_BROWSING_DATA_KINDS;
+cpp_quote("DEFINE_ENUM_FLAG_OPERATORS(COREWEBVIEW2_BROWSING_DATA_KINDS);")
+
+// End of enums and structs
+/// This interface is an extension of `ICoreWebView2` that manages memory usage
+/// target level.
+[uuid(E05E04CA-7924-4C04-A84C-A90572DBA22A), object, pointer_default(unique)]
+interface ICoreWebView2Experimental5 : IUnknown {
+
+  /// `MemoryUsageTargetLevel` indicates desired memory consumption level of
+  /// WebView.
+  [propget] HRESULT MemoryUsageTargetLevel(
+      [out, retval] COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL* level);
+
+  /// An app may set `MemoryUsageTargetLevel` to indicate desired memory
+  /// consumption level of WebView. Scripts will not be impacted and continue
+  /// to run. This is useful for inactive apps that still want to run scripts
+  /// and/or keep network connections alive and therefore could not call
+  /// `TrySuspend` and `Resume` to reduce memory consumption. These apps can
+  /// set memory usage target level to `COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_LOW`
+  /// when the app becomes inactive, and set back to
+  /// `COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_NORMAL` when the app becomes
+  /// active. It is not necessary to set CoreWebView2Controller's IsVisible
+  /// property to false when setting the property.
+  /// It is a best effort operation to change memory usage level, and the
+  /// API will return before the operation completes.
+  /// Setting the level to `COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_LOW`
+  /// could potentially cause memory for some WebView browser processes to be
+  /// swapped out to disk in some circumstances.
+  /// It is a best effort to reduce memory usage as much as possible. If a script
+  /// runs after its related memory has been swapped out, the memory will be swapped
+  /// back in to ensure the script can still run, but performance might be impacted.
+  /// Therefore, the app should set the level back to
+  /// `COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL_NORMAL` when the app becomes
+  /// active again. Setting memory usage target level back to normal will not happen
+  /// automatically.
+  /// An app should choose to use either the combination of `TrySuspend` and `Resume`
+  /// or the combination of setting MemoryUsageTargetLevel to low and normal. It is
+  /// not advisable to mix them.
+  /// Trying to set `MemoryUsageTargetLevel` while suspended will be ignored.
+  /// The `TrySuspend` and `Resume` methods will change the `MemoryUsageTargetLevel`.
+  /// `TrySuspend` will automatically set `MemoryUsageTargetLevel` to low while
+  /// `Resume` on suspended WebView will automatically set `MemoryUsageTargetLevel`
+  /// to normal. Calling `Resume` when the WebView is not suspended would not change
+  /// `MemoryUsageTargetLevel`.
+  ///
+  /// \snippet ViewComponent.cpp MemoryUsageTargetLevel
+  [propput] HRESULT MemoryUsageTargetLevel(
+      [in] COREWEBVIEW2_MEMORY_USAGE_TARGET_LEVEL level);
+
+}
+
+/// The UpdateRuntime operation result.
+[uuid(DD503E49-AB19-47C0-B2AD-6DDD09CC3E3A), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalUpdateRuntimeResult : IUnknown {
+
+  /// The status for the UpdateRuntime operation.
+  [propget] HRESULT Status(
+      [out, retval] COREWEBVIEW2_UPDATE_RUNTIME_STATUS* status);
+
+  /// The update error that occurred while trying to update Edge WebView2 Runtime.
+  /// ExtendedError will be S_OK if Status is not `COREWEBVIEW2_UPDATE_RUNTIME_STATUS_FAILED`
+  /// or `COREWEBVIEW2_UPDATE_RUNTIME_STATUS_BLOCKED_BY_POLICY`.
+  [propget] HRESULT ExtendedError([out, retval] HRESULT* error);
+}
+
+/// The caller implements this interface to receive the UpdateRuntime result.
+[uuid(F1D2D722-3721-499C-87F5-4C405260697A), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalUpdateRuntimeCompletedHandler : IUnknown {
+
+  /// Provides the result for the UpdateRuntime operation.
+  /// `errorCode` will be S_OK if the update operation can be performed
+  /// normally, regardless of whether we could update the Edge WebView2
+  /// Runtime. If an unexpected error interrupts the update operation, error
+  /// code of that unexpected error would be set as `errorCode`.
+  /// When update operation can be performed normally, but update resulted in
+  /// failure, like download failed, the error code would be presented as
+  /// `ExtendedError` property of ICoreWebView2ExperimentalUpdateRuntimeResult.
+  HRESULT Invoke([in] HRESULT errorCode,
+                 [in] ICoreWebView2ExperimentalUpdateRuntimeResult* result);
+}
+
+/// This interface is an extension of the ICoreWebView2Environment that manages
+/// updating Edge WebView2 Runtime. An object implementing the
+/// ICoreWebView2ExperimentalEnvironment3 interface will also implement
+/// ICoreWebView2Environment.
+[uuid(9A2BE885-7F0B-4B26-B6DD-C969BAA00BF1), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalEnvironment3 : IUnknown {
+  /// Try to update the installed Microsoft Edge WebView2 Runtime.
+  /// This will potentially result in a new version of the Edge WebView2
+  /// Runtime being installed and `NewBrowserVersionAvailable` event being raised.
+  /// There is no guarantee on the order of that event being raised and
+  /// UpdateRuntime's completed handler being invoked. Besides the
+  /// `NewBrowserVersionAvailable` event, there will be no impact to any
+  /// currently running WebView2s when the update is installed.
+  /// Even though the Edge WebView2 Runtime update is installed for the machine
+  /// and available to all users, the update will happen silently and not show
+  /// elevation prompt.
+  /// This will not impact Edge browser installations.
+  /// The latest version can always be queried using the
+  /// `GetAvailableCoreWebView2BrowserVersionString` API.
+  /// The UpdateRuntime method is only supported for an installed Edge WebView2
+  /// Runtime. When running a fixed version Edge WebView2 Runtime or non stable
+  /// channel Edge browser, this API will return `HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED)`.
+  /// There could only be one active UpdateRuntime operation in an app process,
+  /// and calling this API before the completed handler for a previous call is invoked
+  /// will fail with `HRESULT_FROM_WIN32(ERROR_BUSY)`.
+  /// Calling this API repeatedly in a short period of time, will also fail with
+  /// `HRESULT_FROM_WIN32(ERROR_BUSY)`. To protect accidental abuse of the update
+  /// service, the implementation throttles the calls of this API to 3 times within
+  /// 5 minutes in a process. The exact throttling limit can change in the future.
+  /// Edge update service can only support one update request at a time globally.
+  /// If there is already an update operation running in the Edge update service,
+  /// UpdateRuntime request will result in the completed handler being invoked with a
+  /// result that has `Status` of `COREWEBVIEW2_UPDATE_RUNTIME_STATUS_UPDATE_ALREADY_RUNNING`.
+  /// As the running update could succeed or fail, the app should retry later if
+  /// `NewBrowserVersionAvailable` event has not been raised.
+  /// The UpdateRuntime operation is associated with the CoreWebView2Environment
+  /// object and any ongoing UpdateRuntime operation will be aborted when the
+  /// associated CoreWebView2Environment along with the CoreWebView2 objects that
+  /// are created by the CoreWebView2Environment object are all released. In this
+  /// case, the completed handler will be invoked with `S_OK` as `errorCode` and a
+  /// result object with `Status` of COREWEBVIEW2_UPDATE_RUNTIME_STATUS_FAILED and
+  /// `ExtendedError` as `E_ABORT`.
+  ///
+  /// \snippet AppWindow.cpp UpdateRuntime
+  HRESULT UpdateRuntime(
+      [in] ICoreWebView2ExperimentalUpdateRuntimeCompletedHandler* handler);
+}
+
+/// This interface is an extension of the ICoreWebView2CompositionController.
+/// An object implementing ICoreWebView2ExperimentalCompositionController4
+/// interface will also implement ICoreWebView2CompositionController.
+[uuid(e6041d7f-18ac-4654-a04e-8b3f81251c33), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalCompositionController4 : IUnknown {
+  /// Returns the UI Automation Provider for the WebView.
+  [propget] HRESULT AutomationProvider([out, retval] IUnknown** provider);
+
+  /// A helper function to convert a pointerId received from the system into
+  /// an ICoreWebView2ExperimentalPointerInfo.
+  /// parentWindow is the HWND that contains the WebView. This can be any HWND
+  /// in the hwnd tree that contains the WebView.
+  /// The COREWEBVIEW2_MATRIX_4X4 is the transform from that HWND to the WebView.
+  /// The returned ICoreWebView2ExperimentalPointerInfo is used in SendPointerInfo.
+  /// The pointer type must be either pen or touch or the function will fail.
+  HRESULT CreateCoreWebView2PointerInfoFromPointerId(
+      [in] UINT pointerId,
+      [in] HWND parentWindow,
+      [in] struct COREWEBVIEW2_MATRIX_4X4 transform,
+      [out, retval] ICoreWebView2PointerInfo** pointerInfo);
+}
+
+/// This interface is continuation of the
+/// ICoreWebView2CompositionController interface to manage drag and
+/// drop.
+[uuid(b134916b-a104-4d2a-9567-c2fd53714350), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalCompositionController3 : IUnknown {
+  /// This function corresponds to \[IDropTarget::DragEnter\]\[WindowsWin32ApiOleidlNfOleidlIdroptargetDragenter\].
+  ///
+  /// This function has a dependency on AllowExternalDrop property of
+  /// CoreWebView2Controller and return E_FAIL to callers to indicate this
+  /// operation is not allowed if AllowExternalDrop property is set to false.
+  ///
+  /// The hosting application must register as an IDropTarget and implement
+  /// and forward DragEnter calls to this function.
+  ///
+  /// In addition, the hosting application needs to create an IDropTargetHelper
+  /// and call the corresponding \[IDropTargetHelper::DragEnter\]\[WindowsWin32ApiShobjidlCoreNfShobjidlCoreIdroptargethelperDragenter\] function on that
+  /// object before forwarding the call to WebView.
+  ///
+  /// point parameter must be modified to include the WebView's offset and be in
+  /// the WebView's client coordinates (Similar to how SendMouseInput works).
+  ///
+  /// \[WindowsWin32ApiOleidlNfOleidlIdroptargetDragenter\]: /windows/win32/api/oleidl/nf-oleidl-idroptarget-dragenter "IDropTarget::DragEnter (oleidl.h) - Win32 apps | Microsoft Docs"
+  ///
+  /// \[WindowsWin32ApiShobjidlCoreNfShobjidlCoreIdroptargethelperDragenter\]: /windows/win32/api/shobjidl_core/nf-shobjidl_core-idroptargethelper-dragenter "IDropTargetHelper::DragEnter (shobjidl_core.h) - Win32 apps | Microsoft Docs"
+  ///
+  /// \snippet DropTarget.cpp DragEnter
+  HRESULT DragEnter(
+      [in] IDataObject* dataObject,
+      [in] DWORD keyState,
+      [in] POINT point,
+      [out, retval] DWORD* effect);
+
+  /// This function corresponds to \[IDropTarget::DragLeave\]\[WindowsWin32ApiOleidlNfOleidlIdroptargetDragleave\].
+  ///
+  /// This function has a dependency on AllowExternalDrop property of
+  /// CoreWebView2Controller and return E_FAIL to callers to indicate this
+  /// operation is not allowed if AllowExternalDrop property is set to false.
+  ///
+  /// The hosting application must register as an IDropTarget and implement
+  /// and forward DragLeave calls to this function.
+  ///
+  /// In addition, the hosting application needs to create an IDropTargetHelper
+  /// and call the corresponding \[IDropTargetHelper::DragLeave\]\[WindowsWin32ApiShobjidlCoreNfShobjidlCoreIdroptargethelperDragleave\] function on that
+  /// object before forwarding the call to WebView.
+  ///
+  /// \[WindowsWin32ApiOleidlNfOleidlIdroptargetDragleave\]: /windows/win32/api/oleidl/nf-oleidl-idroptarget-dragleave "IDropTarget::DragLeave (oleidl.h) - Win32 apps | Microsoft Docs"
+  ///
+  /// \[WindowsWin32ApiShobjidlCoreNfShobjidlCoreIdroptargethelperDragleave\]: /windows/win32/api/shobjidl_core/nf-shobjidl_core-idroptargethelper-dragleave "IDropTargetHelper::DragLeave (shobjidl_core.h) - Win32 apps | Microsoft Docs"
+  ///
+  /// \snippet DropTarget.cpp DragLeave
+  HRESULT DragLeave();
+
+  /// This function corresponds to \[IDropTarget::DragOver\]\[WindowsWin32ApiOleidlNfOleidlIdroptargetDragover\].
+  ///
+  /// This function has a dependency on AllowExternalDrop property of
+  /// CoreWebView2Controller and return E_FAIL to callers to indicate this
+  /// operation is not allowed if AllowExternalDrop property is set to false.
+  ///
+  /// The hosting application must register as an IDropTarget and implement
+  /// and forward DragOver calls to this function.
+  ///
+  /// In addition, the hosting application needs to create an IDropTargetHelper
+  /// and call the corresponding \[IDropTargetHelper::DragOver\]\[WindowsWin32ApiShobjidlCoreNfShobjidlCoreIdroptargethelperDragover\] function on that
+  /// object before forwarding the call to WebView.
+  ///
+  /// point parameter must be modified to include the WebView's offset and be in
+  /// the WebView's client coordinates (Similar to how SendMouseInput works).
+  ///
+  /// \[WindowsWin32ApiOleidlNfOleidlIdroptargetDragover\]: /windows/win32/api/oleidl/nf-oleidl-idroptarget-dragover "IDropTarget::DragOver (oleidl.h) - Win32 apps | Microsoft Docs"
+  ///
+  /// \[WindowsWin32ApiShobjidlCoreNfShobjidlCoreIdroptargethelperDragover\]: /windows/win32/api/shobjidl_core/nf-shobjidl_core-idroptargethelper-dragover "IDropTargetHelper::DragOver (shobjidl_core.h) - Win32 apps | Microsoft Docs"
+  ///
+  /// \snippet DropTarget.cpp DragOver
+  HRESULT DragOver(
+      [in] DWORD keyState,
+      [in] POINT point,
+      [out, retval] DWORD* effect);
+
+  /// This function corresponds to \[IDropTarget::Drop\]\[WindowsWin32ApiOleidlNfOleidlIdroptargetDrop\].
+  ///
+  /// This function has a dependency on AllowExternalDrop property of
+  /// CoreWebView2Controller and return E_FAIL to callers to indicate this
+  /// operation is not allowed if AllowExternalDrop property is set to false.
+  ///
+  /// The hosting application must register as an IDropTarget and implement
+  /// and forward Drop calls to this function.
+  ///
+  /// In addition, the hosting application needs to create an IDropTargetHelper
+  /// and call the corresponding \[IDropTargetHelper::Drop\]\[WindowsWin32ApiShobjidlCoreNfShobjidlCoreIdroptargethelperDrop\] function on that
+  /// object before forwarding the call to WebView.
+  ///
+  /// point parameter must be modified to include the WebView's offset and be in
+  /// the WebView's client coordinates (Similar to how SendMouseInput works).
+  ///
+  /// \[WindowsWin32ApiOleidlNfOleidlIdroptargetDrop\]: /windows/win32/api/oleidl/nf-oleidl-idroptarget-drop "IDropTarget::Drop (oleidl.h) - Win32 apps | Microsoft Docs"
+  ///
+  /// \[WindowsWin32ApiShobjidlCoreNfShobjidlCoreIdroptargethelperDrop\]: /windows/win32/api/shobjidl_core/nf-shobjidl_core-idroptargethelper-drop "IDropTargetHelper::Drop (shobjidl_core.h) - Win32 apps | Microsoft Docs"
+  ///
+  /// \snippet DropTarget.cpp Drop
+  HRESULT Drop(
+      [in] IDataObject* dataObject,
+      [in] DWORD keyState,
+      [in] POINT point,
+      [out, retval] DWORD* effect);
+}
+
+/// Used to get ICoreWebView2ExperimentalProfile object.
+///
+/// \snippet AppWindow.cpp CoreWebView2Profile
+[uuid(b753b024-05c5-40ac-a3f4-701c6f7491f5), object, pointer_default(unique)]
+interface ICoreWebView2Experimental8 : IUnknown {
+  /// The associated `ICoreWebView2ExperimentalProfile` object.
+  [propget] HRESULT Profile([out, retval] ICoreWebView2ExperimentalProfile** value);
+}
+
+/// This interface is used to create CreateCoreWebView2ControllerOptions object, which
+/// can be passed as a parameter in 'CreateCoreWebView2ControllerWithOptions' and
+/// 'CreateCoreWebView2CompositionControllerWithOptions' function for multiple profile support.
+///
+/// \snippet AppWindow.cpp CreateControllerWithOptions
+[uuid(ae714520-d062-4d20-9d08-5096f590ed1a), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalEnvironment8 : IUnknown {
+  /// Create a new ICoreWebView2ExperimentalControllerOptions to be passed as a parameter of
+  /// CreateCoreWebView2ControllerWithOptions and CreateCoreWebView2CompositionControllerWithOptions.
+  HRESULT CreateCoreWebView2ControllerOptions(
+      [in] LPCWSTR profileName,
+      [in] BOOL isInPrivateModeEnabled,
+      [out, retval] ICoreWebView2ExperimentalControllerOptions** options);
+
+  /// Create a new WebView with options.
+  HRESULT CreateCoreWebView2ControllerWithOptions(
+      [in] HWND parentWindow,
+      [in] ICoreWebView2ExperimentalControllerOptions* options,
+      [in] ICoreWebView2CreateCoreWebView2ControllerCompletedHandler* handler);
+
+  /// Create a new WebView in visual hosting mode with options.
+  HRESULT CreateCoreWebView2CompositionControllerWithOptions(
+      [in] HWND parentWindow,
+      [in] ICoreWebView2ExperimentalControllerOptions* options,
+      [in] ICoreWebView2CreateCoreWebView2CompositionControllerCompletedHandler* handler);
+}
+
+/// This interface is used to manage profile options that created by 'CreateCoreWebView2ControllerOptions'.
+///
+/// \snippet AppWindow.cpp CreateControllerWithOptions
+[uuid(12aae616-8ccb-44ec-bcb3-eb1831881635), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalControllerOptions : IUnknown {
+  /// `ProfileName` property is to specify a profile name, which is only allowed to contain
+  /// the following ASCII characters. It has a maximum length of 64 characters excluding the null-terminator.
+  /// It is ASCII case insensitive.
+  ///
+  /// * alphabet characters: a-z and A-Z
+  /// * digit characters: 0-9
+  /// * and '#', '@', '$', '(', ')', '+', '-', '_', '~', '.', ' ' (space).
+  ///
+  /// Note: the text must not end with a period '.' or ' ' (space). And, although upper-case letters are
+  /// allowed, they're treated just as lower-case counterparts because the profile name will be mapped to
+  /// the real profile directory path on disk and Windows file system handles path names in a case-insensitive way.
+  [propget] HRESULT ProfileName([out, retval] LPWSTR* value);
+  /// Sets the `ProfileName` property.
+  [propput] HRESULT ProfileName([in] LPCWSTR value);
+
+  /// `IsInPrivateModeEnabled` property is to enable/disable InPrivate mode.
+  [propget] HRESULT IsInPrivateModeEnabled([out, retval] BOOL* value);
+  /// Sets the `IsInPrivateModeEnabled` property.
+  [propput] HRESULT IsInPrivateModeEnabled([in] BOOL value);
+}
+
+/// Profile for ICoreWebView2Experimental8 interface.
+///
+/// \snippet AppWindow.cpp CoreWebView2Profile
+[uuid(05bfce49-57e2-4963-bbb8-3805ade3c481), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalProfile : IUnknown {
+  /// Name of the profile.
+  [propget] HRESULT ProfileName([out, retval] LPWSTR* value);
+
+  /// InPrivate mode is enabled or not.
+  [propget] HRESULT IsInPrivateModeEnabled([out, retval] BOOL* value);
+
+  /// Full path of the profile directory.
+  [propget] HRESULT ProfilePath([out, retval] LPWSTR* value);
+
+  // TODO: All profile-wide operations/settings will be put below in the future.
+}
+
+/// This is a continuation of the `ICoreWebView2Profile` interface
+[uuid(ee9e58ed-807b-4648-9171-8c0922efe071), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalProfile2 : IUnknown {
+  /// The PreferredColorScheme property sets the overall color scheme of the
+  /// WebView2s associated with this profile. This sets the color scheme for
+  /// WebView2 UI like dialogs, prompts, and context menus by setting the
+  /// media feature `prefers-color-scheme` for websites to respond to.
+  ///
+  /// The default value for this is COREWEBVIEW2_PREFERRED_COLOR_AUTO,
+  /// which will follow whatever theme the OS is currently set to.
+  ///
+  /// \snippet ViewComponent.cpp SetPreferredColorScheme
+  /// Returns the value of the `PreferredColorScheme` property.
+  [propget] HRESULT PreferredColorScheme(
+    [out, retval] COREWEBVIEW2_PREFERRED_COLOR_SCHEME* value);
+
+  /// Sets the `PreferredColorScheme` property.
+  [propput] HRESULT PreferredColorScheme(
+    [in] COREWEBVIEW2_PREFERRED_COLOR_SCHEME value);
+}
+
+/// Experimental Profile interface for DefaultDownloadFolderPath.
+[uuid(4e4d8937-7fc7-4d40-a101-d3c74bbc3785), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalProfile3 : IUnknown {
+  /// Gets the `DefaultDownloadFolderPath` property. The default value is the
+  /// system default download folder path for the user.
+  [propget] HRESULT DefaultDownloadFolderPath([out, retval] LPWSTR* value);
+
+  /// Sets the `DefaultDownloadFolderPath` property. The default download folder
+  /// path is persisted in the user data folder across sessions. The value
+  /// should be an absolute path to a folder that the user and application can
+  /// write to. Returns `E_INVALIDARG` if the value is invalid, and the default
+  /// download folder path is not changed. Otherwise the path is changed
+  /// immediately. If the directory does not yet exist, it is created at the
+  /// time of the next download. If the host application does not have
+  /// permission to create the directory, then the user is prompted to provide a
+  /// new path through the Save As dialog. The user can override the default
+  /// download folder path for a given download by choosing a different path in
+  /// the Save As dialog.
+  [propput] HRESULT DefaultDownloadFolderPath([in] LPCWSTR value);
+}
+
+/// Experimental Profile interface for Clear Browsing Data.
+[uuid(ee38b7e1-221d-465d-864b-ea4c22194dca), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalProfile4 : IUnknown {
+
+  /// Clear browsing data based on a data type. This method takes two parameters,
+  /// the first being a mask of one or more `COREWEBVIEW2_BROWSING_DATA_KINDS`. Or
+  /// operation(s) can be applied to multiple `COREWEBVIEW2_BROWSING_DATA_KINDS` to
+  /// create a mask representing those data types. The browsing data kinds that are
+  /// supported are listed below. These data kinds follow a hierarchical structure in
+  /// which nested bullet points are included in their parent bullet point's data kind.
+  /// Ex: All DOM storage is encompassed in all site data which is encompassed in
+  /// all profile data.
+  /// * All Profile
+  ///   * All Site Data
+  ///     * All DOM Storage: File Systems, Indexed DB, Local Storage, Web SQL, Cache
+  ///         Storage
+  ///     * Cookies
+  ///   * Disk Cache
+  ///   * Download History
+  ///   * General Autofill
+  ///   * Password Autosave
+  ///   * Browsing History
+  ///   * Settings
+  ///
+  /// The completed handler will be invoked when the browsing data has been cleared and
+  /// will indicate if the specified data was properly cleared. In the case in which
+  /// the operation is interrupted and the corresponding data is not fully cleared
+  /// the handler will return `E_ABORT` and otherwise will return `S_OK`.
+  /// Because this is an asynchronous operation, code that is dependent on the cleared
+  /// data must be placed in the callback of this operation.
+  /// If the WebView object is closed before the clear browsing data operation
+  /// has completed, the handler will be released, but not invoked. In this case
+  /// the clear browsing data operation may or may not be completed.
+  /// ClearBrowsingData clears the `dataKinds` regardless of timestamp.
+
+  HRESULT ClearBrowsingData(
+      [in] COREWEBVIEW2_BROWSING_DATA_KINDS dataKinds,
+      [in] ICoreWebView2ExperimentalClearBrowsingDataCompletedHandler* handler);
+
+  /// ClearBrowsingDataInTimeRange behaves like ClearBrowsingData except that it
+  /// takes in two additional parameters for the start and end time for which it
+  /// should clear the data between.  The `startTime` and `endTime`
+  /// parameters correspond to the number of seconds since the UNIX epoch.
+  /// `startTime` is inclusive while `endTime` is exclusive, therefore the data will
+  /// be cleared between [startTime, endTime).
+
+  HRESULT ClearBrowsingDataInTimeRange(
+      [in] COREWEBVIEW2_BROWSING_DATA_KINDS dataKinds,
+      [in] double startTime,
+      [in] double endTime,
+      [in] ICoreWebView2ExperimentalClearBrowsingDataCompletedHandler* handler);
+
+  /// ClearBrowsingDataAll behaves like ClearBrowsingData except that it
+  /// clears the entirety of the data associated with the profile it is called on.
+  /// It clears the data regardless of timestamp.
+  ///
+  /// \snippet AppWindow.cpp ClearBrowsingData
+
+  HRESULT ClearBrowsingDataAll(
+    [in] ICoreWebView2ExperimentalClearBrowsingDataCompletedHandler* handler);
+}
+
+/// The caller implements this interface to receive the ClearBrowsingData result.
+[uuid(e9710a06-1d1d-49b2-8234-226f35846ae5), object, pointer_default(unique)]
+interface ICoreWebView2ExperimentalClearBrowsingDataCompletedHandler : IUnknown {
+
+  /// Provide the completion status of the corresponding asynchronous method.
+  HRESULT Invoke([in] HRESULT errorCode);
+}
+
+}

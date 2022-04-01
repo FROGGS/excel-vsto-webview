@@ -5,7 +5,7 @@
 			<firstColumn>
 				<taskFormGroup idMso="SaveGroup">
 					<category idMso="Save">
-						<task id="myCustomTask" label="My custon task" insertAfterMso="ButtonTaskDynamicServiceProvider">
+						<task id="myCustomTask" label="My custom task" insertAfterMso="ButtonTaskDynamicServiceProvider">
 							<group id="myGroupInTabSave" label="Custom functionality" helperText="This group contains custom functionality.">
 								<primaryItem>
 									<button id="myButton" label="My Button" onAction="CallMe" />
