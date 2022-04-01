@@ -1,0 +1,12 @@
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\excel-vsto-webview.dll
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\excel-vsto-webview.pdb
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\excel-vsto-webview.dll.manifest
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\excel-vsto-webview.vsto
+C:\excel-vsto-webview\excel-vsto-webview\bin\Debug\Microsoft.Office.Tools.Common.v4.0.Utilities.dll
+C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.csproj.AssemblyReference.cache
+C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel_vsto_webview.Properties.Resources.resources
+C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.csproj.GenerateResource.cache
+C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.csproj.CoreCompileInputs.cache
+C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.csproj.CopyComplete
+C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.dll
+C:\excel-vsto-webview\excel-vsto-webview\obj\Debug\excel-vsto-webview.pdb

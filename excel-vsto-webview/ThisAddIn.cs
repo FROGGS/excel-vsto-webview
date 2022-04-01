@@ -18,6 +18,11 @@ namespace excel_vsto_webview
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
         }
+        
+        protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
+        {
+            return new Ribbon1();
+        }
 
         #region Von VSTO generierter Code
 

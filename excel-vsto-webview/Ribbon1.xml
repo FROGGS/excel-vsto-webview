@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+	<backstage>
+		<tab idMso="TabSave">
+			<firstColumn>
+				<taskFormGroup idMso="SaveGroup">
+					<category idMso="Save">
+						<task id="myCustomTask" label="My custon task" insertAfterMso="ButtonTaskDynamicServiceProvider">
+							<group id="myGroupInTabSave" label="Custom functionality" helperText="This group contains custom functionality.">
+								<primaryItem>
+									<button id="myButton" label="My Button" onAction="CallMe" />
+								</primaryItem>
+							</group>
+						</task>
+					</category>
+				</taskFormGroup>
+			</firstColumn>
+		</tab>
+	</backstage>
+</customUI>
+
