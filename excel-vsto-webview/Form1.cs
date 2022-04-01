@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.WinForms;
 
 namespace excel_vsto_webview
 {
@@ -19,8 +21,15 @@ namespace excel_vsto_webview
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            await InitializeCoreWebView2Async();
-            WebsiteNavigate(webView21, "https://github.com/");
+            // await InitializeCoreWebView2Async();
+            // WebsiteNavigate(webView21, "https://github.com/");
+
+            await InitializeCoreWebView2Async(webView21, @"C:\Temp");
+
+            System.Diagnostics.Debug.WriteLine("Info: after InitializeCoreWebView2Async");
+
+            //navigate to URL by setting Source property
+            webView21.Source = new Uri("https://www.microsoft.com", UriKind.Absolute);
         }
 
         #region Code from @cgeier https://github.com/MicrosoftEdge/WebView2Feedback/issues/187
@@ -39,13 +48,46 @@ namespace excel_vsto_webview
             }
         }
 
-        private async Task InitializeCoreWebView2Async()
+        public async Task InitializeCoreWebView2Async()
         {
-            //initialize CorewWebView2
+            System.Diagnostics.Debug.WriteLine("Info: before EnsureCoreWebView2Async");
+
+            //wait for CoreWebView2 initialization
             await webView21.EnsureCoreWebView2Async();
 
+            System.Diagnostics.Debug.WriteLine("Info: after EnsureCoreWebView2Async");
+
+        }
+
+        private async Task InitializeCoreWebView2Async(WebView2 wv, string webCacheDir = "")
+        {
+            //initialize CorewWebView2
+            //await webView21.EnsureCoreWebView2Async();
+            CoreWebView2EnvironmentOptions options = null;
+            string tempWebCacheDir = string.Empty;
+            CoreWebView2Environment webView2Environment = null;
+
+            //set value
+            tempWebCacheDir = webCacheDir;
+
+            if (String.IsNullOrEmpty(tempWebCacheDir))
+            {
+                //get fully-qualified path to user's temp folder
+                tempWebCacheDir = System.IO.Path.GetTempPath();
+
+                tempWebCacheDir = System.IO.Path.Combine(tempWebCacheDir, System.Guid.NewGuid().ToString("N"));
+            }
+
+            //webView2Environment = await CoreWebView2Environment.CreateAsync(@"C:\Program Files (x86)\Microsoft\Edge Dev\Application\85.0.564.8", tempWebCacheDir, options);
+            webView2Environment = await CoreWebView2Environment.CreateAsync(null, tempWebCacheDir, options);
+
+            //wait for CoreWebView2 initialization
+            await wv.EnsureCoreWebView2Async(webView2Environment);
+
+            System.Diagnostics.Debug.WriteLine("Cache data folder set to: " + tempWebCacheDir);
+
             //add desired code using AddScriptToExecuteOnDocumentCreatedAsync
-            await AddExecuteOnDocumentCreatedAsyncCode();
+            // await AddExecuteOnDocumentCreatedAsyncCode();
         }
 
         public void WebsiteNavigate(Microsoft.Web.WebView2.WinForms.WebView2 wv, string dest)

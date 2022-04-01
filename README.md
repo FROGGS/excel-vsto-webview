@@ -24,7 +24,7 @@ commit 90b81b64d22368e87a3f42e6f4cb5f59151615b1
 - OK: pressing F5, creating empty workbook, clicking File, Save,
   My custom task, My Button results in an empty Form window popping up
 
-commit
+commit 0067efd1e05dc9a2a85b6052d46d7e7f256cfa52
 - adding webview2 init code from @cgeier https://github.com/MicrosoftEdge/WebView2Feedback/issues/187
 - NOK: pressing F5, creating empty workbook, clicking File, Save,
   My custom task, My Button results in an empty Form window popping up
