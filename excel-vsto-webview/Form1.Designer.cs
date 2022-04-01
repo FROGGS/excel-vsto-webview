@@ -52,6 +52,7 @@ namespace excel_vsto_webview
             this.Controls.Add(this.webView21);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.webView21)).EndInit();
             this.ResumeLayout(false);
 
