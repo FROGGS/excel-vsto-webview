@@ -39,7 +39,9 @@ namespace excel_vsto_webview
 
         public void CallMe(Office.IRibbonControl control)
         {
-            System.Windows.Forms.MessageBox.Show("You called me");
+            // System.Windows.Forms.MessageBox.Show("You called me");
+            Form1 _frm = new Form1();
+            _frm.Show();
         }
 
         #region IRibbonExtensibility-Member
