@@ -1,0 +1,5 @@
+- open Visual Studio 2019
+- create new project
+- search for VSTO
+- select Excel-VSTP-Add-In
+- name it excel-vsto-webview
